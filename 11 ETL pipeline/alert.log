@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "c:\Users\Assiya\Desktop\asiyasiyasiya\data\lab11\etl_pipeline.py", line 140, in <module>
+    existing_emails = get_existing_emails()
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Assiya\Desktop\asiyasiyasiya\data\lab11\etl_pipeline.py", line 128, in get_existing_emails
+    cursor.execute("SELECT email FROM users")
+sqlite3.OperationalError: no such table: users
+

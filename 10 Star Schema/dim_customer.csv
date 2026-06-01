@@ -1,0 +1,5 @@
+﻿customer_key;customer_id;name;email;loyalty_tier;registration_date
+1;C1001;Alice Johnson;alice@email.com;Gold;15.01.2023
+2;C1002;Bob Smith;bob@email.com;Silver;20.02.2023
+3;C1003;Carol White;carol@email.com;Gold;10.03.2023
+4;C1004;David Brown;david@email.com;Bronze;05.04.2023

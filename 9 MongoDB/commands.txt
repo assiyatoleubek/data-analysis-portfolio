@@ -1,0 +1,183 @@
+//TASK 2
+use lab9
+
+db.createCollection("products")
+db.createCollection("orders")
+
+db.products.insertOne({
+  _id: 1,
+  name: "Laptop",
+  price: 1200,
+  category: "Electronics",
+  tags: ["computer", "portable"],
+  stock: 25
+})
+
+db.products.insertOne({
+  _id: 2,
+  name: "Smart Watch",
+  price: 199.99,
+  category: "Electronics",
+  tags: ["watch", "wearable", "wireless"],
+  stock: 40
+})
+
+db.products.insertOne({
+  _id: 3,
+  name: "Headphones",
+  price: 80.00,
+  category: "Electronics",
+  tags: ["audio", "wireless"],
+  stock: 15
+})
+
+
+db.orders.insertOne({
+  _id: 1,
+  customer: "Alice",
+  date: new Date("2024-01-15"),
+  items: [
+    { productId: 1, quantity: 1 },
+    { productId: 3, quantity: 2 }
+  ],
+  total: 1359.98,
+  status: "pending"
+})
+
+db.orders.insertOne({
+  _id: 2,
+  customer: "Arman",
+  date: new Date("2024-02-14"),
+  items: [
+    { productId: 2, quantity: 1 }
+  ],
+  total: 199.99,
+  status: "shipped"
+})
+
+db.orders.insertOne({
+  _id: 3,
+  customer: "Aisulu",
+  date: new Date("2024-03-03"),
+  items: [
+    { productId: 3, quantity: 1 }
+  ],
+  total: 80.00,
+  status: "delivered"
+})
+
+
+//TASK 3
+//task3.1
+
+//1.Find all products in the products collection.
+db.products.find()
+
+//2.Find all electronics (category: "Electronics") and display only the name and price(projection).
+db.products.find(
+  { category: "Electronics" },
+  { name: 1, price: 1, _id: 0 }
+)
+
+//3.Find products with price > 50 and sort them by price descending
+db.products.find(
+  { price: { $gt: 50 } }
+).sort({ price: -1 })
+
+//task 3.2
+
+//4.Insert a new product: Bluetooth Speaker
+db.products.insertOne({
+  _id: 6,
+  name: "Bluetooth Speaker",
+  price: 49.99,
+  category: "Electronics",
+  tags: ["speaker", "audio"],
+  stock: 60
+})
+
+//task 3.3
+
+//5.Increase the price of all electronics products by 10% (use $mul operator).
+db.products.updateMany(
+  { category: "Electronics" },
+  { $mul: { price: 1.1 } }
+)
+
+//6.Add a new tag "best seller" to the product named "Smart Watch" (use $push to add to array).
+db.products.updateOne(
+  { name: "Smart Watch" },
+  { $push: { tags: "best seller" } }
+)
+
+//task 3.4
+
+//7.Delete the product with _id: 6 (Bluetooth Speaker)
+db.products.deleteOne({ _id: 6 })
+
+//8.Delete all products with stock < 10
+db.products.deleteMany({ stock: { $lt: 10 } })
+
+
+
+//TASK 4
+//1.Find products whose price is between 20 and 100 (inclusive)
+db.products.find(
+  { price: { $gte: 20, $lte: 100 } }
+)
+
+//2.Find orders that have status either "pending" or "shipped"
+db.orders.find(
+  { status: { $in: ["pending", "shipped"] } }
+)
+
+//3.Find products whose tags array contains the word "wireless"
+db.products.find(
+  { tags: "wireless" }
+)
+
+//4.Find orders where the customer is not "Alice"
+db.orders.find(
+  { customer: { $ne: "Alice" } }
+)
+
+
+
+//TASK 5
+//1.Total revenue from all orders
+db.orders.aggregate([
+  { $group: { _id: null, totalRevenue: { $sum: "$total" } } }
+])
+
+//2.Average order value per customer
+db.orders.aggregate([
+  { $group: { _id: "$customer", avgOrder: { $avg: "$total" } } }
+])
+
+//3.Top selling products
+db.orders.aggregate([
+  { $unwind: "$items" }, 
+  { $group: { _id: "$items.productId", totalQuantity: { $sum: "$items.quantity" } } }, 
+  { 
+    $lookup: {
+      from: "products",
+      localField: "_id",
+      foreignField: "_id",
+      as: "productDetails"
+    }
+  },
+  { $unwind: "$productDetails" }, 
+  { $project: { productName: "$productDetails.name", totalQuantity: 1, _id: 0 } },
+  { $sort: { totalQuantity: -1 } } 
+])
+
+//4.Monthly order count
+db.orders.aggregate([
+  { 
+    $group: { 
+      _id: { month: { $month: "$date" }, year: { $year: "$date"} }, 
+      count: { $sum: 1 } 
+    } 
+  },
+  { $sort: { "_id.year": 1, "_id.month": 1 } } 
+])

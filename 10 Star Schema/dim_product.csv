@@ -1,0 +1,7 @@
+﻿product_key;product_id;title;author;genre;price
+1;SKU-001;The Data Warehouse Toolkit;Ralph Kimball;Technology;49.99
+2;SKU-002;SQL for Smarties;Joe Celko;Technology;39.99
+3;SKU-003;Clean Code;Robert Martin;Technology;45.00
+4;SKU-004;The Da Vinci Code;Dan Brown;Fiction;14.99
+5;SKU-005;The Catcher in the Rye;J.D. Salinger;Fiction;10.99
+6;SKU-006;The Lost Symbol;Dan Brown;Fiction;12.99
